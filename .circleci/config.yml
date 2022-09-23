@@ -1,0 +1,44 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push --force https://github.com/MinakshiKundu/PractiseCode.git master
+  test:
+    docker:
+      - image: katalonstudio/katalon
+    steps:
+      - checkout
+      - run:
+          name: Execute Katalon Studio
+          command: cd Tests && katalon-execute.sh -statusDelay=30 -retry=0 -testSuitePath="Test Suites/TestSuite001" -executionProfile="default" -browserType="Chrome (headless)"
+      - store-test_results:
+          path: ./report
+      - store-artifacts:
+          path: ./report
+  deploy:
+    docker:
+      - image: buildpack-deps:trusty
+      
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push --force https://github.com/MinakshiKundu/PractiseCode.git master
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - deploy:
+          requires:
+            - test
