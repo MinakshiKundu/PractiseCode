@@ -1,7 +1,5 @@
 # This code is licensed from CircleCI to the user under the MIT license.
 # See here for details: https://circleci.com/developer/orbs/licensing
-
-
 version: 2.1
 description: >
   Executing Katalon tests with your CircleCI CI/CD pipeline easily with the Katalon orb
@@ -15,23 +13,23 @@ examples:
     usage:
       version: 2.1
       orbs:
-        katalon-studio: katalon/katalon-studio@23.0.11 #replace 23.0.12 with the latest version of Katalon Orb
+        katalon-studio: katalon/katalon-studio@23.0.12 #replace 23.0.12 with the latest version of Katalon Orb
       workflows:
        build:
         jobs:
             - katalon-studio/run:
                     version: "latest"
-                    command_arguments: "-browserType='Chrome' -retry=0 -statusDelay=15 -testSuitePath='Test Suites/TestSuite001'"
+                    command_arguments: "-browserType='Chrome' -retry=0 -statusDelay=15 -testSuitePath='Test Suites/TS_RegressionTest'"
 executors:
       default:
         description: Ubuntu based Docker Image for Katalon Studio
         parameters:
-          version: "23.0.11"
+          version:
             description : "Specifying the Katalon Studio version your tests will be executed with (Only version 7+ supported)"
             type: string
             default: "latest"
         docker:
-          - image: katalonstudio/katalon:23.0.11
+          - image: katalonstudio/katalon:<<parameters.version>>
 commands:
       execute:
         description: Defining command arguments to execute your Katalon tests with API Key required
@@ -40,28 +38,27 @@ commands:
             description: The defined command arguments used for executing your Katalon tests
             type: string
             default: ""
-          KATALON_API_KEY: KATALON_API_KEY
+          KATALON_API_KEY:
             description: The name of the environment variable containing the API key used for authentication with Katalon Server
             type: env_var_name
         steps:
           - run: 
               name: Katalon Execute
-              command: katalon-execute.sh -apiKey=$KATALON_API_KEY -browserType='Chrome' -retry=0 -statusDelay=15 -testSuitePath='Test
-            Suites/TestSuite001' 
+              command: katalon-execute.sh -apiKey=$<<parameters.KATALON_API_KEY>> <<parameters.command_arguments>> 
 jobs:
       run:
           description: Executing your Katalon tests in the Katalon Studio's Docker Image with the provided command arguments 
           executor: default
           parameters:
-            version: "23.0.11"
+            version:
               description: "Specifying the Katalon Studio version your tests will be executed with (Only version 7+ supported). By default, it's the latest version."
               default: "latest"
               type: string
-            KATALON_API_KEY: KATALON_API_KEY
+            KATALON_API_KEY:
               description: The API KEY used for authentication with the Katalon Server. Learn how to get the API KEY via https://docs.katalon.com/katalon-analytics/docs/ka-api-key.html.
               default: KATALON_API_KEY
               type: env_var_name
-            command_arguments: "-browserType='Chrome' -retry=0 -statusDelay=15 -testSuitePath='Test Suites/TestSuite001'"
+            command_arguments:
               description: The command arguments used for executing the tests. See the supported Command Syntax via https://docs.katalon.com/katalon-studio/docs/console-mode-execution.html.
               default: ""
               type: string
@@ -78,9 +75,9 @@ workflows:
   build:
     jobs:
         - katalon-studio/run:
-            executor: katalon-studio/23.0.11
+            executor: katalon-studio/23.0.12
             steps:
               - checkkout
               - katalon-studio/execute:
-                  version: "23.0.11"
-                  command_arguments: '-browserType="Chrome" -retry=0 -statusDelay=15 -testSuitePath="Test Suites/TestSuite001"'
+                  version: "latest"
+                  command_arguments: '-browserType="Chrome" -retry=0 -statusDelay=15 -testSuitePath="Test Suites/TS_RegressionTest"'
