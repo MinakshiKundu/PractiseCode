@@ -13,7 +13,7 @@ examples:
     usage:
       version: 2.1
       orbs:
-        katalon-studio: katalon/katalon-studio@23.0.12 #replace 23.0.12 with the latest version of Katalon Orb
+        katalon-studio: katalon/katalon-studio@23.0.11 #replace 23.0.12 with the latest version of Katalon Orb
       workflows:
        build:
         jobs:
@@ -75,7 +75,7 @@ workflows:
   build:
     jobs:
         - katalon-studio/run:
-            executor: katalon-studio/23.0.12
+            executor: katalon-studio/23.0.11
             steps:
               - checkkout
               - katalon-studio/execute:
