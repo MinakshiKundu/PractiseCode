@@ -26,7 +26,7 @@ executors:
       default:
         description: Ubuntu based Docker Image for Katalon Studio
         parameters:
-          version:23.0.11
+          version: "23.0.11"
             description : "Specifying the Katalon Studio version your tests will be executed with (Only version 7+ supported)"
             type: string
             default: "latest"
@@ -53,7 +53,7 @@ jobs:
           description: Executing your Katalon tests in the Katalon Studio's Docker Image with the provided command arguments 
           executor: default
           parameters:
-            version:23.0.11
+            version: "23.0.11"
               description: "Specifying the Katalon Studio version your tests will be executed with (Only version 7+ supported). By default, it's the latest version."
               default: "latest"
               type: string
